@@ -7,7 +7,7 @@ metadata:
 
 given response then
     # Check if content type options header does not exist in response
-    if not("X-Content-Type-Options:" in {latest.response.headers}) then
+    if "Content-Type:" in {latest.response.headers} and not("X-Content-Type-Options:" in {latest.response.headers}) then
         report issue:
             severity: low
             confidence: firm
