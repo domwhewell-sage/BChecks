@@ -6,11 +6,15 @@ metadata:
     tags: "passive"
 
 given response then
-    # Check if content type options header does not exist in response
-    if not("Permissions-Policy:" in {latest.response.headers}) then
-        report issue:
-            severity: low
-            confidence: firm
-            detail: "The Permissions-Policy header appears to be missing from this webpage's HTTP response."
-            remediation: "The webpage's responses should contain a Permissions-Policy header."
+    # Ensures static file types irrelevant to the Permissions-Policy header do not get checked.
+    if not({latest.response.url.file} matches "(\.apk|\.bmp|\.cgi|\.css|\.csv|\.db|\.dmg|\.doc|\.ico|\.ipa|\.eot|\.exe|\.gif|\.gz|\.jpg|\.jpeg|\.js|\.json|\.mp3|\.mp4|\.otf|\.pdf|\.png|\.ppt|\.rar|\.sqlite|\.svg|\.tar|\.tsv|\.ttf|\.txt|\.wav|\.webm|\.webp|\.woff|\.xls|\.xml|\.zip)") then
+
+        # Check if content type options header does not exist in response
+        if not("Permissions-Policy:" in {latest.response.headers}) then
+            report issue:
+                severity: low
+                confidence: firm
+                detail: "The Permissions-Policy header appears to be missing from this webpage's HTTP response."
+                remediation: "The webpage's responses should contain a Permissions-Policy header."
+        end if
     end if
