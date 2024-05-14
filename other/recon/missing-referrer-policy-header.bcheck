@@ -1,0 +1,16 @@
+metadata:
+    language: v1-beta
+    name: "Missing Referrer-Policy header"
+    description: "This BCheck checks for 'missing' advanced security headers values."
+    author: "domwhewell-sage"
+    tags: "passive"
+
+given response then
+    # Check if content type options header does not exist in response
+    if not("Referrer-Policy:" in {latest.response.headers}) then
+        report issue:
+            severity: low
+            confidence: firm
+            detail: "The Referrer-Policy header appears to be missing from this webpage's HTTP response."
+            remediation: "The webpage's responses should contain a Referrer-Policy header."
+    end if
