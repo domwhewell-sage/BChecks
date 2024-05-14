@@ -6,11 +6,15 @@ metadata:
     tags: "passive"
 
 given response then
-    # Check if content type options header does not exist in response
-    if "Referer" in {latest.request.headers} and not("Referrer-Policy:" in {latest.response.headers}) then
-        report issue:
-            severity: low
-            confidence: firm
-            detail: "The Referrer-Policy header appears to be missing from this webpage's HTTP response."
-            remediation: "The webpage's responses should contain a Referrer-Policy header."
+    # Ensure this is not a unauthorized page or redirect
+    if not({latest.response.status_code} matches "[34]0[0-9]") then
+    
+        # Check if content type options header does not exist in response
+        if "Referer" in {latest.request.headers} and not("Referrer-Policy:" in {latest.response.headers}) then
+            report issue:
+                severity: low
+                confidence: firm
+                detail: "The Referrer-Policy header appears to be missing from this webpage's HTTP response."
+                remediation: "The webpage's responses should contain a Referrer-Policy header."
+        end if
     end if
