@@ -6,11 +6,15 @@ metadata:
     tags: "passive"
 
 given response then
-    # Check if content type options header does not exist in response
-    if "Content-Type:" in {latest.response.headers} and not("X-Content-Type-Options:" in {latest.response.headers}) then
-        report issue:
-            severity: low
-            confidence: firm
-            detail: "The X-Content-Type-Options header appears to be missing from this webpage's HTTP response."
-            remediation: "The webpage's responses should contain a X-Content-Type-Options header."
+    # Ensure this is not a unauthorized page or redirect
+    if not({latest.response.status_code} matches "[34]0[0-9]") then
+
+        # Check if content type options header does not exist in response
+        if "Content-Type:" in {latest.response.headers} and not("X-Content-Type-Options:" in {latest.response.headers}) then
+            report issue:
+                severity: low
+                confidence: firm
+                detail: "The X-Content-Type-Options header appears to be missing from this webpage's HTTP response."
+                remediation: "The webpage's responses should contain a X-Content-Type-Options header."
+        end if
     end if
